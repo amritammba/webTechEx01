@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            background: rgb(230, 230, 181);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-image: url('bg image.avif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: rgb(40, 39, 46);
+        }
+        .form-container label {
+            color: black;
+            font-weight: bold;
+        }
+        #output {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="text-center mb-4">Employee Registration Form</h2>
+        <form id="employeeForm">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter your name">
+            </div>
+            <div class="mb-3">
+                <label for="dob" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="dob">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Gender</label><br>
+                <input type="radio" name="gender" id="male" value="Male"> <label for="male">Male</label>
+                <input type="radio" name="gender" id="female" value="Female"> <label for="female">Female</label>
+                <input type="radio" name="gender" id="other" value="Other"> <label for="other">Other</label>
+            </div>
+            <div class="mb-3">
+                <label for="department" class="form-label">Department</label>
+                <select class="form-control" id="department">
+                    <option value="">Select your department</option>
+                    <option value="CSE">CSE</option>
+                    <option value="CSD">CSD</option>
+                    <option value="ECE">ECE</option>
+                    <option value="EEE">EEE</option>
+                    <option value="E&I">E&I</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                <div class="form-text">Email must not start with numbers, must contain '@', and should end with 'kongu.edu'.</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                <p>Password should be at least 6 characters long and contain alphabets, numbers, and special characters.</p>
+            </div>
+            <div class="mb-3">
+                <label for="yearOfJoin" class="form-label">Year of Joining</label>
+                <select class="form-control" id="yearOfJoin">
+                    <option value="">Select year</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="experience" class="form-label">Experience (in years)</label>
+                <input type="number" class="form-control" id="experience" placeholder="Enter experience in years" min="0">
+            </div>
+            <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" id="mobile" placeholder="Enter your mobile number">
+                <div class="form-text">Must be 10 digits and start with 9, 7, 6, or 8.</div>
+            </div>
+            <div class="text-center">
+                <button type="button" class="btn btn-primary" onclick="handleSubmit()">Submit</button>
+                <button type="button" class="btn btn-secondary" onclick="handleReset()">Reset</button>
+            </div>
+        </form>
+        <div id="output" class="mt-4 text-center text-success fw-bold"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const yearSelect = document.getElementById("yearOfJoin");
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= 1980; year--) {
+                let option = document.createElement("option");
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+
+            // Validation on blur event (when user leaves input field)
+            document.querySelectorAll("input, select").forEach(field => {
+                field.addEventListener("blur", function () {
+                    if (!this.value.trim()) {
+                        alert(`Please fill out the "${this.previousElementSibling.innerText}" field before proceeding.`);
+                        this.focus();
+                    }
+                });
+            });
+        });
+
+        function handleSubmit() {
+            const name = document.getElementById("name").value.trim();
+            const dob = document.getElementById("dob").value.trim();
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+            const department = document.getElementById("department").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const yearOfJoin = document.getElementById("yearOfJoin").value.trim();
+            const experience = document.getElementById("experience").value.trim();
+            const mobile = document.getElementById("mobile").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!name || !dob || !gender || !department || !email || !yearOfJoin || !experience || !mobile || !password) {
+                alert("Please fill out all fields before submitting.");
+                return;
+            }
+
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+            if (!passwordRegex.test(password)) {
+                alert("Password must be at least 6 characters long and contain at least one letter, one number, and one special character.");
+                return;
+            }
+
+            document.getElementById("output").innerHTML = `
+                <h3>Submitted Details</h3>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Date of Birth:</strong> ${dob}</p>
+                <p><strong>Gender:</strong> ${gender}</p>
+                <p><strong>Department:</strong> ${department}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Year of Joining:</strong> ${yearOfJoin}</p>
+                <p><strong>Experience:</strong> ${experience} years</p>
+                <p><strong>Mobile Number:</strong> ${mobile}</p>
+                <p class="text-danger"><strong>Password:</strong> (Hidden for security reasons)</p>
+            `;
+
+            alert("Form Submitted Successfully!");
+        }
+
+        function handleReset() {
+            document.getElementById("employeeForm").reset();
+            document.getElementById("output").innerHTML = "";
+        }
+    </script>
+</body>
+</html>
